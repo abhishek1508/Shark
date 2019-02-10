@@ -1,0 +1,127 @@
+ext {
+    //Android Library Versions
+    supportLibraryVersion = '28.0.0'
+    constraintLayoutVersion = '1.1.2'
+
+    kotlinVersion = '1.2.41'
+
+    // Dagger Version
+    daggerVersion = '2.17'
+
+    //Testing framework Versions
+    junitVersion = '4.12'
+    runnerVersion = '1.0.2'
+    espressoVersion = '3.0.2'
+
+    // RxJava, RxKotlin, RxAndroid Versions
+    rxJava2Version = '2.3.0'
+    rxKotlinVersion = '2.2.0'
+    rxAndroidVersion = '2.0.2'
+
+    // EventBus
+    eventBusVersion = '3.1.1'
+
+    // Gson Version
+    gsonVersion = '2.8.5'
+
+    // Retrofit Version
+    retrofitVersion = '2.4.0'
+    gsonConverterVersion = '2.3.0'
+    scalarConverterVersion = '2.3.0'
+
+    // Okhttp3 Version
+    okhttp3Version = '3.11.0'
+    loggingInterceptorVersion = '3.6.0'
+    mockwebserverVersion = '3.12.0'
+    okioVersion = '2.1.0'
+
+    // Glide Version
+    glideVersion = '4.7.1'
+
+    // Mockito core
+    mockitoCoreVersion = '2.8.9'
+
+    def androidLibs = [
+            design  : [group: 'com.android.support', name: 'design', version: supportLibraryVersion],
+            appCompat  : [group: 'com.android.support', name: 'appcompat-v7', version: supportLibraryVersion],
+            recyclerView: [group: 'com.android.support', name: 'recyclerview-v7', version: supportLibraryVersion],
+            supportAnnotation  : [group: 'com.android.support', name: 'support-annotations', version: supportLibraryVersion],
+            constraintLayout  : [group: 'com.android.support.constraint', name: 'constraint-layout', version: constraintLayoutVersion],
+    ]
+
+    def kotlinLibs = [
+            kotlin  : [group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk7', version: kotlinVersion]
+    ]
+
+    def libs = [
+            rxJava2  : [group: 'com.squareup.retrofit2', name: 'adapter-rxjava2', version: rxJava2Version],
+            rxKotlin  : [group: 'io.reactivex.rxjava2', name: 'rxkotlin', version: rxKotlinVersion],
+            rxAndroid  : [group: 'io.reactivex.rxjava2', name: 'rxandroid', version: rxAndroidVersion],
+            eventBus  : [group: 'org.greenrobot', name: 'eventbus', version: eventBusVersion],
+            gson  : [group: 'com.google.code.gson', name: 'gson', version: gsonVersion],
+            retrofit  : [group: 'com.squareup.retrofit2', name: 'retrofit', version: retrofitVersion],
+            gsonConverter  : [group: 'com.squareup.retrofit2', name: 'converter-gson', version: gsonConverterVersion],
+            scalarConverter  : [group: 'com.squareup.retrofit2', name: 'converter-scalars', version: scalarConverterVersion],
+            okhttp3  : [group: 'com.squareup.okhttp3', name: 'okhttp', version: okhttp3Version],
+            okhttpLoggingInterceptor  : [group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: loggingInterceptorVersion],
+            mockwebserver  : [group: 'com.squareup.okhttp3', name: 'mockwebserver', version: mockwebserverVersion],
+            okio  : [group: 'com.squareup.okio', name: 'okio', version: okioVersion],
+            dagger  : [group: 'com.google.dagger', name: 'dagger', version: daggerVersion],
+            daggerCompiler  : [group: 'com.google.dagger', name: 'dagger-compiler', version: daggerVersion],
+            daggerAndroidSupport  : [group: 'com.google.dagger', name: 'dagger-android-support', version: daggerVersion],
+            daggerAndroidProcessor : [group: 'com.google.dagger', name: 'dagger-android-processor', version: daggerVersion],
+            glide  : [group: 'com.github.bumptech.glide', name: 'glide', version: glideVersion],
+            glideCompiler  : [group: 'com.github.bumptech.glide', name: 'compiler', version: glideVersion]
+    ]
+
+    def testLibs = [
+            junit  : [group: 'junit', name: 'junit', version: junitVersion],
+            mockitoCore  : [group: 'org.mockito', name: 'mockito-core', version: mockitoCoreVersion],
+            runner  : [group: 'com.android.support.test', name: 'runner', version: runnerVersion],
+            espresso  : [group: 'com.android.support.test.espresso', name: 'espresso-core', version: espressoVersion],
+    ]
+
+    appDependencies = [
+            // Kotlin dependencies
+            [configuration: "implementation", dependency: kotlinLibs.kotlin],
+
+            // Android Lib dependencies
+            [configuration: "implementation", dependency: androidLibs.design],
+            [configuration: "implementation", dependency: androidLibs.appCompat],
+            [configuration: "implementation", dependency: androidLibs.recyclerView],
+            [configuration: "implementation", dependency: androidLibs.supportAnnotation],
+            [configuration: "implementation", dependency: androidLibs.constraintLayout],
+
+            // Test Lib dependencies
+            [configuration: "implementation", dependency: testLibs.junit],
+            [configuration: "testImplementation", dependency: testLibs.mockitoCore],
+            [configuration: "implementation", dependency: testLibs.runner],
+            [configuration: "implementation", dependency: testLibs.espresso],
+
+            // 3rd party library dependencies
+            [configuration: "implementation", dependency: libs.rxJava2],
+            [configuration: "implementation", dependency: libs.rxKotlin],
+            [configuration: "implementation", dependency: libs.rxAndroid],
+
+            [configuration: "implementation", dependency: libs.eventBus],
+
+            [configuration: "implementation", dependency: libs.gson],
+
+            [configuration: "implementation", dependency: libs.retrofit],
+            [configuration: "implementation", dependency: libs.gsonConverter],
+            [configuration: "implementation", dependency: libs.scalarConverter],
+
+            [configuration: "implementation", dependency: libs.okhttp3],
+            [configuration: "implementation", dependency: libs.okhttpLoggingInterceptor],
+            [configuration: "testImplementation", dependency: libs.mockwebserver],
+            [configuration: "testImplementation", dependency: libs.okio],
+
+            [configuration: "implementation", dependency: libs.dagger],
+            [configuration: "kapt", dependency: libs.daggerCompiler],
+            [configuration: "implementation", dependency: libs.daggerAndroidSupport],
+            [configuration: "kapt", dependency: libs.daggerAndroidProcessor],
+
+            [configuration: "implementation", dependency: libs.glide],
+            [configuration: "kapt", dependency: libs.glideCompiler],
+    ]
+}

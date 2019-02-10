@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SharkTeeth</string>
+    <string name="image_url">"https://farm%1$d.staticflickr.com/%2$s/%3$s_%4$s_m.jpg"</string>
+</resources>
