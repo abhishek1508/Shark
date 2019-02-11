@@ -6,12 +6,14 @@ import com.android.sharkteeth.feature.api.entity.Photo
 
 interface SharkListContract {
     interface SharkListView: BaseView {
-        fun showImages(photoList: MutableList<Photo>)
+        fun showImages(photoList: MutableList<Photo>, loadMore: Boolean)
+
+        fun nextPage(currentPageNo: Int, totalPages: Int)
 
         fun errorReceived()
     }
 
     interface SharkListPresenter: BasePresenter<SharkListView> {
-        fun getImages()
+        fun getImages(pageNumber: Int, loadMore: Boolean)
     }
 }

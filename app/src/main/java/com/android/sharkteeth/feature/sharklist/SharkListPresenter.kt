@@ -35,12 +35,12 @@ class SharkListPresenter @Inject constructor(): SharkListContract.SharkListPrese
 
     // SharkListContract.SharkListPresenter methods ////////////////////////////////////////////////
 
-    override fun getImages() {
+    override fun getImages(pageNumber: Int, loadMore: Boolean) {
         val map = hashMapOf<String, String>()
         map["method"] = "flickr.photos.search"
         map["text"] = "shark"
         map["format"] = "json"
-        map["nojsoncallback"] = "1"
+        map["nojsoncallback"] = pageNumber.toString()
         map["page"] = "1"
         map["extras"] = "url_t.url_c.url_l.url_o"
         disposable = repository.getImages(map)
@@ -57,7 +57,8 @@ class SharkListPresenter @Inject constructor(): SharkListContract.SharkListPrese
 
                     override fun onResponseSuccess(response: Photos?) {
                         Log.d("Trsting", "response: $response")
-                        view?.showImages(response?.photos?.photo!!)
+                        view?.nextPage(response?.photos?.page!!, response.photos.pages)
+                        view?.showImages(response?.photos?.photo!!, loadMore)
                     }
                 })
     }

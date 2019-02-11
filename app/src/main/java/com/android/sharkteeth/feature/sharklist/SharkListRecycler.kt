@@ -2,6 +2,7 @@ package com.android.sharkteeth.feature.sharklist
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,14 @@ class SharkListRecycler(private val context: Context):
     fun addAllPhotos(list: MutableList<Photo>) {
         this.photoList.addAll(list)
         notifyItemRangeInserted(0, list.size)
+    }
+
+    fun addMorePhotos(list: MutableList<Photo>) {
+        Log.d("endless", "called")
+        val currentEndingPosition = this.photoList.size
+        val size = list.size
+        this.photoList.addAll(list)
+        notifyItemRangeInserted(currentEndingPosition, size)
     }
 
     fun removeAllPhotos() {
