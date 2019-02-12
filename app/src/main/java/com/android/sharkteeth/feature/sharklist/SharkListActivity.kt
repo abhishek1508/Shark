@@ -20,11 +20,13 @@ class SharkListActivity: BaseActivity<SharkListContract.SharkListPresenter, Shar
     private var isLoading: Boolean = false
 
     // BaseActivity ////////////////////////////////////////////////////////////////////////////////
-    override fun getLayout(): Int {
-        return R.layout.activity_main
-    }
+    override fun getLayout(): Int = R.layout.activity_main
 
     override fun getView(): SharkListContract.SharkListView? = this
+
+    override fun initDagger(appComponent: AppComponent) {
+        appComponent.sharkListBuilder().sharkListActivity(this).build().inject(this)
+    }
 
     override fun initView() {
         adapter = SharkListRecycler(this)
@@ -35,6 +37,7 @@ class SharkListActivity: BaseActivity<SharkListContract.SharkListPresenter, Shar
 
         swipeRefreshLayout.setOnRefreshListener {
             nextPageNumber = 1
+            isLoading = false
             presenter.getImages(nextPageNumber, false)
         }
 
@@ -45,10 +48,6 @@ class SharkListActivity: BaseActivity<SharkListContract.SharkListPresenter, Shar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter.getImages(nextPageNumber, false)
-    }
-
-    override fun initDagger(appComponent: AppComponent) {
-        appComponent.sharkListBuilder().sharkListActivity(this).build().inject(this)
     }
 
     // Private methods /////////////////////////////////////////////////////////////////////////////
@@ -92,7 +91,7 @@ class SharkListActivity: BaseActivity<SharkListContract.SharkListPresenter, Shar
     }
 
     // SharkListRecycler.IPhotoOnClickListener methods /////////////////////////////////////////////
-    override fun onPhotoClicked(position: Int) {
-
+    override fun onPhotoClicked(photo: Photo) {
+        startActivity(getLightboxIntent(photo))
     }
 }

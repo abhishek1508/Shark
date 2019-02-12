@@ -3,19 +3,17 @@ package com.android.sharkteeth.feature.sharklist
 import android.util.Log
 import com.android.sharkteeth.base.BaseView
 import com.android.sharkteeth.factory.CallbackWrapper
-import com.android.sharkteeth.factory.ServiceGeneratorFactory
 import com.android.sharkteeth.feature.api.entity.Photos
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import retrofit2.adapter.rxjava2.Result
 import javax.inject.Inject
 
 class SharkListPresenter @Inject constructor(): SharkListContract.SharkListPresenter {
 
     var view: SharkListContract.SharkListView? = null
     private lateinit var disposable: Disposable
-    @Inject lateinit var repository: SharkListRepository
+    @Inject lateinit var repository: Repository
 
     // BasePresenter methods ///////////////////////////////////////////////////////////////////////
     override fun onViewAttached(view: SharkListContract.SharkListView?) {
@@ -40,8 +38,8 @@ class SharkListPresenter @Inject constructor(): SharkListContract.SharkListPrese
         map["method"] = "flickr.photos.search"
         map["text"] = "shark"
         map["format"] = "json"
-        map["nojsoncallback"] = pageNumber.toString()
-        map["page"] = "1"
+        map["nojsoncallback"] = "1"
+        map["page"] = pageNumber.toString()
         map["extras"] = "url_t.url_c.url_l.url_o"
         disposable = repository.getImages(map)
                 .subscribeOn(Schedulers.io())

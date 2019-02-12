@@ -64,10 +64,13 @@ class SharkListRecycler(private val context: Context):
                                                                       photo.server,
                                                                       photo.id,
                                                                       photo.secret))
+            itemView.setOnClickListener {
+                callback.onPhotoClicked(photo)
+            }
         }
     }
 
     interface IPhotoOnClickListener {
-        fun onPhotoClicked(position: Int)
+        fun onPhotoClicked(photo: Photo)
     }
 }

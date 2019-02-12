@@ -1,6 +1,7 @@
 package com.android.sharkteeth.di
 
 import android.app.Application
+import com.android.sharkteeth.feature.di.LightboxComponent
 import com.android.sharkteeth.feature.di.SharkListComponent
 import com.google.gson.Gson
 import dagger.BindsInstance
@@ -23,6 +24,8 @@ interface AppComponent: AndroidInjector<DaggerApplication> {
     fun okHttpClient(): OkHttpClient
 
     fun sharkListBuilder(): SharkListComponent.Builder
+
+    fun lightboxBuilder(): LightboxComponent.Builder
 
     @Component.Builder
     interface Builder {
