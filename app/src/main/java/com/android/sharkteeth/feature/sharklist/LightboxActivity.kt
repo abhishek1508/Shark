@@ -45,6 +45,9 @@ class LightboxActivity: BaseActivity<LightboxContract.LightboxPresenter, Lightbo
     override fun showPhotoInfo(photoInfo: PhotoInfo) {
         photoDetail.loadImage(getString(R.string.original_image_url, photoInfo.photo.farm,
                                         photoInfo.photo.server, photoInfo.photo.id,
+                                        photoInfo.photo.secret),
+                              getString(R.string.image_url, photoInfo.photo.farm,
+                                        photoInfo.photo.server, photoInfo.photo.id,
                                         photoInfo.photo.secret))
     }
 }

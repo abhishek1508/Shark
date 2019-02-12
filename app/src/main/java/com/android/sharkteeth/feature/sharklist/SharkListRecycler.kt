@@ -63,6 +63,11 @@ class SharkListRecycler(private val context: Context):
                                                                       photo.farm,
                                                                       photo.server,
                                                                       photo.id,
+                                                                      photo.secret),
+                                          context.resources.getString(R.string.thumbnail_url,
+                                                                      photo.farm,
+                                                                      photo.server,
+                                                                      photo.id,
                                                                       photo.secret))
             itemView.setOnClickListener {
                 callback.onPhotoClicked(photo)

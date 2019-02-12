@@ -1,6 +1,9 @@
 package com.android.sharkteeth.feature.sharklist
 
+import android.content.res.Configuration
 import android.os.Bundle
+import android.os.Handler
+import android.os.Parcelable
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -10,6 +13,8 @@ import com.android.sharkteeth.di.AppComponent
 import com.android.sharkteeth.feature.api.entity.Photo
 import kotlinx.android.synthetic.main.activity_main.*
 
+const val STATE_RECYCLER = "state.recycler"
+
 class SharkListActivity: BaseActivity<SharkListContract.SharkListPresenter, SharkListContract.SharkListView>(),
         SharkListContract.SharkListView, SharkListRecycler.IPhotoOnClickListener {
 
@@ -18,6 +23,10 @@ class SharkListActivity: BaseActivity<SharkListContract.SharkListPresenter, Shar
     private var nextPageNumber: Int = 1
     private var totalPages: Int = -1
     private var isLoading: Boolean = false
+
+    companion object {
+        private val bundleRecyclerViewState: Bundle = Bundle()
+    }
 
     // BaseActivity ////////////////////////////////////////////////////////////////////////////////
     override fun getLayout(): Int = R.layout.activity_main
@@ -29,6 +38,7 @@ class SharkListActivity: BaseActivity<SharkListContract.SharkListPresenter, Shar
     }
 
     override fun initView() {
+        Log.d("erereer", "initView")
         adapter = SharkListRecycler(this)
         manager = GridLayoutManager(this, 3)
         adapter.setCallback(this)
@@ -47,7 +57,25 @@ class SharkListActivity: BaseActivity<SharkListContract.SharkListPresenter, Shar
     // Appcompat activity //////////////////////////////////////////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("erereer", "onCreate")
         presenter.getImages(nextPageNumber, false)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        bundleRecyclerViewState.putParcelable(STATE_RECYCLER, photoRecycler?.layoutManager?.onSaveInstanceState())
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        Log.d("erereer", "onConfigurationChanged")
+        photoRecycler.layoutManager?.onRestoreInstanceState(bundleRecyclerViewState.getParcelable<Parcelable>(STATE_RECYCLER))
+        val spanCount = when(newConfig?.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> 3
+            else -> 6
+        }
+        manager.spanCount = spanCount
+        photoRecycler.layoutManager = manager
     }
 
     // Private methods /////////////////////////////////////////////////////////////////////////////
