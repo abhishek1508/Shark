@@ -5,4 +5,8 @@
     <string name="thumbnail_url">"https://farm%1$d.staticflickr.com/%2$s/%3$s_%4$s_t.jpg"</string>
     <string name="image_url">"https://farm%1$d.staticflickr.com/%2$s/%3$s_%4$s_c.jpg"</string>
     <string name="original_image_url">"https://farm%1$d.staticflickr.com/%2$s/%3$s_%4$s_h.jpg"</string>
+    <string name="no_permission">Please allow the permission to write to storage</string>
+    <string name="download_status">Downloading…</string>
+    <string name="download_unsuccessful">Download unsuccessful</string>
+    <string name="fragment_tag">LightboxFragment</string>
 </resources>

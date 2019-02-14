@@ -41,6 +41,9 @@ ext {
     // Mockito core
     mockitoCoreVersion = '2.8.9'
 
+    // RxPermissions
+    permissionsVersion = '0.10.2'
+
     def androidLibs = [
             design  : [group: 'com.android.support', name: 'design', version: supportLibraryVersion],
             appCompat  : [group: 'com.android.support', name: 'appcompat-v7', version: supportLibraryVersion],
@@ -71,7 +74,8 @@ ext {
             daggerAndroidSupport  : [group: 'com.google.dagger', name: 'dagger-android-support', version: daggerVersion],
             daggerAndroidProcessor : [group: 'com.google.dagger', name: 'dagger-android-processor', version: daggerVersion],
             glide  : [group: 'com.github.bumptech.glide', name: 'glide', version: glideVersion],
-            glideCompiler  : [group: 'com.github.bumptech.glide', name: 'compiler', version: glideVersion]
+            glideCompiler  : [group: 'com.github.bumptech.glide', name: 'compiler', version: glideVersion],
+            rxPermissions  : [group: 'com.github.tbruyelle', name: 'rxpermissions', version:permissionsVersion]
     ]
 
     def testLibs = [
@@ -123,5 +127,7 @@ ext {
 
             [configuration: "implementation", dependency: libs.glide],
             [configuration: "kapt", dependency: libs.glideCompiler],
+
+            [configuration: "implementation", dependency: libs.rxPermissions],
     ]
 }
