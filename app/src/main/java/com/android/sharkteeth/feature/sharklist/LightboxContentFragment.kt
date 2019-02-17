@@ -1,122 +1,112 @@
 package com.android.sharkteeth.feature.sharklist
 
-import android.content.Context
 import android.os.Bundle
-import android.os.Environment
-import android.support.v4.app.Fragment
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Toast
 import com.android.sharkteeth.R
+import com.android.sharkteeth.base.BaseFragment
+import com.android.sharkteeth.di.AppComponent
+import com.android.sharkteeth.extension.android.view.loadImage
+import com.android.sharkteeth.feature.api.entity.Photo
+import com.android.sharkteeth.feature.api.entity.PhotoInfo
 import com.tbruyelle.rxpermissions2.RxPermissions
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.layout_fragment_lightbox.view.*
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
-import java.util.concurrent.Callable
+import kotlinx.android.synthetic.main.layout_fragment_lightbox.*
 
+const val MAX_ZOOM = 10f
+const val MIN_ZOOM = 1f
 
-class LightboxContentFragment: Fragment() {
+class LightboxContentFragment: BaseFragment<LightboxContract.LightboxPresenter, LightboxContract
+.LightboxView>(), LightboxContract.LightboxView {
 
-    private lateinit var callback: TaskCallback
+    private var photo: Photo? = null
+    private var scaleFactor: Float = 1f
     private lateinit var  rxPermissions: RxPermissions
-    private var url: String? = ""
+    private lateinit var scaleGestureDetector: ScaleGestureDetector
 
     companion object {
-        const val URL_KEY = "url.key"
-        fun newInstance(url: String): LightboxContentFragment {
+        const val PHOTO_DETAIL = "photo.detail"
+        fun newInstance(photoDetail: Photo): LightboxContentFragment {
             val bundle = Bundle()
-            bundle.putString(URL_KEY, url)
+            bundle.putParcelable(PHOTO_DETAIL, photoDetail)
             val fragment = LightboxContentFragment()
             fragment.arguments = bundle
             return fragment
         }
     }
 
+    // BaseFragment methods ////////////////////////////////////////////////////////////////////////
+
+    override fun getLayout(): Int = R.layout.layout_fragment_lightbox
+
+    override fun getFragmentView(): LightboxContract.LightboxView? = this
+
+    override fun initDagger(appComponent: AppComponent) {
+        appComponent.lightboxBuilder().lightboxFragment(this).build().inject(this)
+    }
+
+    // Fragment Lifecycle methods //////////////////////////////////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
         rxPermissions = RxPermissions(this)
+        scaleGestureDetector = ScaleGestureDetector(activity, ScaleListener())
         if (arguments != null) {
-            url = arguments?.getString(URL_KEY)
+            photo = arguments?.getParcelable(PHOTO_DETAIL)!!
         }
-    }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        callback = context as TaskCallback
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.layout_fragment_lightbox, container, false)
-        view.download.setOnClickListener {
-            rxPermissions
-                    .request(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    .subscribe {
-                        if (it) { downloadToStorage() }
-                        else {
-                            Toast.makeText(activity, activity?.resources?.getString(R.string.no_permission),
-                                           Toast.LENGTH_LONG).show()
-                        }
-                    }
+        val view =  inflater.inflate(getLayout(), container, false)
+        view.setOnTouchListener { _, motionEvent ->
+            scaleGestureDetector.onTouchEvent(motionEvent)
+            true
         }
         return view
     }
 
-    private fun downloadToStorage() {
-        callback.onDownloadStarted()
-        var fileOutputStream: FileOutputStream? = null
-        var inputStream: InputStream? = null
-        Observable.fromCallable(object : Callable<Boolean> {
-            override fun call(): Boolean {
-                try {
-                    val image = url
-                    val url = URL(image)
-                    val conn = url.openConnection() as HttpURLConnection
-                    conn.requestMethod = "GET"
-                    conn.doOutput = true
-                    conn.connect()
-
-                    val sdcardRoot = Environment.getExternalStorageDirectory()
-                    val file = File(sdcardRoot, "somefile.jpg")
-                    fileOutputStream = FileOutputStream(file)
-                    inputStream = conn.inputStream
-                    var downloadedSize = 0
-                    val buffer = ByteArray(1024)
-                    var bufferLength = 0
-                    while({bufferLength = inputStream?.read(buffer)!!; bufferLength}() > 0) {
-                        fileOutputStream?.write(buffer, 0, bufferLength)
-                        downloadedSize += bufferLength
-                    }
-                } catch(e: IOException) {
-                    Log.d("TAG", "exception: ${e.message}")
-                    return false
-                } finally {
-                    fileOutputStream?.close()
-                    inputStream?.close()
-                }
-                return true
-            }
-
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {value ->
-                    callback.onDownloadComplete(value)
-                }
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        presenter.getPhotoInfo(photo?.id)
+        photoDetail.loadImage(getString(R.string.image_url, photo?.farm, photo?.server, photo?.id, photo?.secret), null)
+        download.setOnClickListener { presenter.requestPermissions(rxPermissions) }
     }
 
-    interface TaskCallback {
-        fun onDownloadStarted()
+    // LightboxContract.LightboxView methods ///////////////////////////////////////////////////////
+    override fun showPhotoInfo(photoInfo: PhotoInfo) {
+        description.text = photoInfo.photo.description.content
+    }
 
-        fun onDownloadComplete(isSuccess: Boolean)
+    override fun onPermissionGranted() {
+        presenter.downloadToPhone(getString(R.string.original_image_url, photo?.farm, photo?.server, photo?.id, photo?.secret))
+    }
+
+    override fun onPermissionNotGranted() {
+        Toast.makeText(activity, activity?.resources?.getString(R.string.no_permission), Toast.LENGTH_LONG).show()
+    }
+
+    override fun onDownloadStarted() {
+        downloadStatus.visibility = VISIBLE
+    }
+
+    override fun onDownloadStatus(isSuccess: Boolean) {
+        downloadStatus.visibility = GONE
+        if (!isSuccess) {
+            Toast.makeText(activity, getString(R.string.download_unsuccessful), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // ScaleGestureDetector ////////////////////////////////////////////////////////////////////////
+    inner class ScaleListener: ScaleGestureDetector.SimpleOnScaleGestureListener() {
+
+        override fun onScale(detector: ScaleGestureDetector?): Boolean {
+            scaleFactor *= detector?.scaleFactor!!
+            scaleFactor = Math.max(MIN_ZOOM, Math.min(scaleFactor, MAX_ZOOM))
+            photoDetail.scaleX = scaleFactor
+            photoDetail.scaleY = scaleFactor
+            return true
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.android.sharkteeth.extension.android.view
 
 import android.graphics.drawable.Drawable
+import android.support.annotation.Nullable
 import android.widget.ImageView
 import com.android.sharkteeth.di.GlideApp
 import com.android.sharkteeth.di.GlideRequest
@@ -10,7 +11,7 @@ fun ImageView.loadThumbnail(url: String?): GlideRequest<Drawable> {
     return GlideApp.with(context).load(url)
 }
 
-fun ImageView.loadImage(url: String?, thumbnail: String?) {
+fun ImageView.loadImage(url: String?, @Nullable thumbnail: String?) {
     val reqOptions = RequestOptions().centerCrop()
     GlideApp.with(context)
             .load(url)
@@ -19,7 +20,7 @@ fun ImageView.loadImage(url: String?, thumbnail: String?) {
             .into(this)
 }
 
-fun ImageView.loadCircularImage(url: String?, thumbnail: String?) {
+fun ImageView.loadCircularImage(url: String?, @Nullable thumbnail: String?) {
     val reqOptions = RequestOptions().circleCrop()
     GlideApp.with(context)
             .load(url)
