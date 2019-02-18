@@ -2,18 +2,20 @@ package com.android.sharkteeth.feature.sharklist
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.os.Handler
 import android.os.Parcelable
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
+import android.widget.ImageView
 import com.android.sharkteeth.R
 import com.android.sharkteeth.base.BaseActivity
 import com.android.sharkteeth.di.AppComponent
 import com.android.sharkteeth.feature.api.entity.Photo
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_toolbar.*
 
 const val STATE_RECYCLER = "state.recycler"
+const val TRANSITION_NAME = "image.transition"
 
 class SharkListActivity: BaseActivity<SharkListContract.SharkListPresenter, SharkListContract.SharkListView>(),
         SharkListContract.SharkListView, SharkListRecycler.IPhotoOnClickListener {
@@ -38,7 +40,6 @@ class SharkListActivity: BaseActivity<SharkListContract.SharkListPresenter, Shar
     }
 
     override fun initView() {
-        Log.d("erereer", "initView")
         adapter = SharkListRecycler(this)
         manager = GridLayoutManager(this, 3)
         adapter.setCallback(this)
@@ -57,7 +58,7 @@ class SharkListActivity: BaseActivity<SharkListContract.SharkListPresenter, Shar
     // Appcompat activity //////////////////////////////////////////////////////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("erereer", "onCreate")
+        setToolbar(app_bar, getString(R.string.app_name))
         presenter.getImages(nextPageNumber, false)
     }
 
@@ -68,7 +69,6 @@ class SharkListActivity: BaseActivity<SharkListContract.SharkListPresenter, Shar
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
-        Log.d("erereer", "onConfigurationChanged")
         photoRecycler.layoutManager?.onRestoreInstanceState(bundleRecyclerViewState.getParcelable<Parcelable>(STATE_RECYCLER))
         val spanCount = when(newConfig?.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> 3
@@ -83,9 +83,6 @@ class SharkListActivity: BaseActivity<SharkListContract.SharkListPresenter, Shar
         photoRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                Log.d("endlessscroll", "last visible position: ${manager.findLastCompletelyVisibleItemPosition()}, " +
-                        "total count: ${manager.itemCount - 10}")
-
                 if (manager.findLastCompletelyVisibleItemPosition() >= manager.itemCount - 10
                                     && nextPageNumber < totalPages && !isLoading) {
                     isLoading = true
@@ -119,7 +116,10 @@ class SharkListActivity: BaseActivity<SharkListContract.SharkListPresenter, Shar
     }
 
     // SharkListRecycler.IPhotoOnClickListener methods /////////////////////////////////////////////
-    override fun onPhotoClicked(photo: Photo) {
-        startActivity(getLightboxIntent(photo))
+    override fun onPhotoClicked(pos: Int, photo: Photo, imageView: ImageView) {
+        val transitionName = TRANSITION_NAME+"$pos"
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this, imageView, transitionName)
+        startActivity(getLightboxIntent(photo, transitionName), options.toBundle())
     }
 }

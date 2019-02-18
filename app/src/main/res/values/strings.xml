@@ -1,8 +1,7 @@
 <resources>
-    <string name="app_name">SharkTeeth</string>
+    <string name="app_name">SharkFeed</string>
     <string name="download">Download</string>
     <string name="openInApp">Open In App</string>
-    <string name="thumbnail_url">"https://farm%1$d.staticflickr.com/%2$s/%3$s_%4$s_t.jpg"</string>
     <string name="image_url">"https://farm%1$d.staticflickr.com/%2$s/%3$s_%4$s_c.jpg"</string>
     <string name="original_image_url">"https://farm%1$d.staticflickr.com/%2$s/%3$s_%4$s_h.jpg"</string>
     <string name="no_permission">Please allow the permission to write to storage</string>

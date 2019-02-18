@@ -5,7 +5,9 @@ import android.support.v7.widget.Toolbar
 import android.support.annotation.LayoutRes
 import android.support.v7.app.AppCompatActivity
 import com.android.sharkteeth.App
+import com.android.sharkteeth.R
 import com.android.sharkteeth.di.AppComponent
+import kotlinx.android.synthetic.main.layout_toolbar.*
 import javax.inject.Inject
 
 abstract class BaseActivity<P: BasePresenter<V>, V: BaseView>: AppCompatActivity() {
@@ -31,7 +33,9 @@ abstract class BaseActivity<P: BasePresenter<V>, V: BaseView>: AppCompatActivity
         super.onDestroy()
     }
 
-    fun setToolbar(appBar: Toolbar) {
-
+    fun setToolbar(appBar: Toolbar, title: String) {
+        setSupportActionBar(app_bar)
+        toolbarTitle.text = getString(R.string.app_name)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
     }
 }

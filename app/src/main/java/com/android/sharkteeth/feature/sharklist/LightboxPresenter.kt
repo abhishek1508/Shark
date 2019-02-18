@@ -19,6 +19,7 @@ import java.net.URL
 import java.util.concurrent.Callable
 import javax.inject.Inject
 
+const val FILE_EXT = ".jpg"
 class LightboxPresenter @Inject constructor(): LightboxContract.LightboxPresenter {
 
     var view: LightboxContract.LightboxView? = null
@@ -88,7 +89,7 @@ class LightboxPresenter @Inject constructor(): LightboxContract.LightboxPresente
                 conn.connect()
 
                 val sdcardRoot = Environment.getExternalStorageDirectory()
-                val file = File(sdcardRoot, "somefile.jpg")
+                val file = File(sdcardRoot, "IMG_${System.currentTimeMillis()}"+ FILE_EXT)
                 fileOutputStream = FileOutputStream(file)
                 inputStream = conn.inputStream
                 var downloadedSize = 0

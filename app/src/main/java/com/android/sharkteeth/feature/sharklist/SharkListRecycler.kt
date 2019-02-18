@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.android.sharkteeth.R
 import com.android.sharkteeth.extension.android.view.loadImage
 import com.android.sharkteeth.feature.api.entity.Photo
@@ -63,19 +64,14 @@ class SharkListRecycler(private val context: Context):
                                                                       photo.farm,
                                                                       photo.server,
                                                                       photo.id,
-                                                                      photo.secret),
-                                          context.resources.getString(R.string.thumbnail_url,
-                                                                      photo.farm,
-                                                                      photo.server,
-                                                                      photo.id,
                                                                       photo.secret))
             itemView.setOnClickListener {
-                callback.onPhotoClicked(photo)
+                callback.onPhotoClicked(layoutPosition, photo, itemView.sharkImage)
             }
         }
     }
 
     interface IPhotoOnClickListener {
-        fun onPhotoClicked(photo: Photo)
+        fun onPhotoClicked(pos: Int, photo: Photo, imageView: ImageView)
     }
 }
