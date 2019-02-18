@@ -1,5 +1,6 @@
 package com.android.sharkteeth.feature.sharklist
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.Toast
 import com.android.sharkteeth.R
 import com.android.sharkteeth.base.BaseFragment
 import com.android.sharkteeth.di.AppComponent
+import com.android.sharkteeth.extension.android.support.constraint.group.setAllOnClickListener
 import com.android.sharkteeth.feature.api.entity.Photo
 import com.android.sharkteeth.feature.api.entity.PhotoInfo
 import com.tbruyelle.rxpermissions2.RxPermissions
@@ -64,7 +66,7 @@ class LightboxContentFragment: BaseFragment<LightboxContract.LightboxPresenter, 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         presenter.getPhotoInfo(photo?.id)
-        download.setOnClickListener { presenter.requestPermissions(rxPermissions) }
+        downloadGroup.setAllOnClickListener(View.OnClickListener{ presenter.requestPermissions(rxPermissions)})
     }
 
     // LightboxContract.LightboxView methods ///////////////////////////////////////////////////////

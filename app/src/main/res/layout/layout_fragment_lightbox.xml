@@ -28,6 +28,12 @@
         app:layout_constraintBottom_toBottomOf="@id/imageDownload"
         />
 
+    <android.support.constraint.Group
+        android:id="@+id/downloadGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="download, imageDownload"/>
+
     <TextView
         android:id="@+id/openInApp"
         android:layout_width="wrap_content"
@@ -51,6 +57,12 @@
         app:layout_constraintEnd_toStartOf="@id/openInApp"
         app:layout_constraintBottom_toBottomOf="parent"
         />
+
+    <android.support.constraint.Group
+        android:id="@+id/openInAppGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="openInApp, imageOpenInApp"/>
 
     <View
         android:id="@+id/horizontalDivider"
